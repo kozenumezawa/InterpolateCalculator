@@ -7,13 +7,20 @@
 
 </head>
 <body>
-    <script src = "main.js"></script>
+
     <div class="font">
-        格子情報: <input type="file" id="targetFiles" size="300"><br>
-        <input type="button" value="getData" onclick="getBinFile()"><br>
+     coord &nbsp;&nbsp;  data: <input type="file" id="coordFiles" size="300"><br>
+     value &nbsp;&nbsp;&nbsp;  data: <input type="file" id="valueFiles" size="300"><br>
+     connect data: <input type="file" id="connectFiles" size="300"><br>
+     <input type="button" value="calculate" onclick="getBinFile()"><br>
     </div>
 
     <div id="output"></div>
+
+    <script src = "src/three.min.js"></script>
+    <script src = "src/OrbitControls.js"></script>
+    <script src = "src/main.js"></script>
+    <script src = "src/DataFile.js"></script>
 
 </body>
 </html>

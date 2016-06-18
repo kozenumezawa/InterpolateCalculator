@@ -146,16 +146,12 @@ class prismCell {
     return jacobiMatrix;
   }
 
-  calculateScalar(local) {
-    const p = local[0];
-    const q = local[1];
-    const r = local[2];
-
+  interpolateScalar(local) {
     let N = this.getInterpolationFunctions(local);
 
     let S = 0;
     for(let i = 0; i < this.verticies; i++){
-      S += N[i] * S[i];
+      S += N[i] * this.S[i];
     }
     return S;
   }

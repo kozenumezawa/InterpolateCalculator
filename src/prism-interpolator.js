@@ -1,5 +1,18 @@
+// prism's verticies are defined as follows:
+//        N2          N0=(0,0,1)  (=(p,q,r))
+//       / \          N1=(1,0,1)
+//      /  \          N2=(0,1,1)
+//    N0----N1        N3=(0,0,0)
+//    |     |         N4=(1,0,0)
+//    |     |         N5=(0,1,0)
+//    N3----N4
+
+
 class prismCell {
   constructor(v0, v1, v2, v3, v4, v5, s0, s1, s2, s3, s4, s5) {
+    let V = [v0, v1, v2, v3, v4, v5];
+    let S = [s0, s1, s2, s3, s4, s5];
+    
     this.V = [ v0, v1, v2, v3, v4, v5 ];  //coordinates
     this.S = [ s0, s1, s2, s3, s4, s5 ];  //scalar
     this.verticies = 6;
@@ -23,22 +36,27 @@ class prismCell {
   }
 
   globalToLocal (global) {
-    const E = 0.00001;    //Convergence condition
+    const E = 0.0001;    //Convergence condition
     let X = global;
-    let x0 = [0.5, 0.5, 0.5];   //initial value of local coordinates
+    let x0 = [0.5, 0.5 * global[1] / global[0], 0.5 * global[2] / global[0]];   //initial value of local coordinates
 
-    for(let i = 0; i < 10000; i++){
-      let X0 = this.localToGlobal(l0);
+    const maxLoop = 10;
+    let i;
+    for(i = 0; i < maxLoop; i++){
+      let X0 = this.localToGlobal(x0);
       let dX = this.minus_1_1(X, X0);
-
       let J = this.jacobian(x0);
-      let dx = this.multiply_3_1(this.inverse(J), dX);
+      let dx = this.multiply_3_1(this.inverse(this.transpose(J)), dX);  //CAUTION: we have to transpose 
+
       if(Math.sqrt(dx[0] * dx[0] + dx[1] * dx[1] + dx[2] * dx[2]) < E)
         break;
 
       x0[0] += dx[0];
       x0[1] += dx[1];
       x0[2] += dx[2];
+    }
+    if(i == maxLoop){
+      console.log('error is happen in globalToLocal');
     }
     return x0;
   }
@@ -128,23 +146,6 @@ class prismCell {
     return jacobiMatrix;
   }
 
-  gradient(local) {
-    let dN = this.differentialFunction(local);  //dN = [dNdp[6], dNdq[6], dNdr[6]]
-
-    let dSdx = 0;
-    let dSdy = 0;
-    let dSdz = 0;
-    for(let i = 0; i < this.verticies; i++){
-      dSdx += this.S[i] * dN[0][i];
-      dSdy += this.S[i] * dN[1][i];
-      dSdz += this.S[i] * dN[2][i];
-    }
-
-    const J = this.jacobian(local);
-    const G = this.multiply_3_1(this.inverse(J), [dSdx, dSdy, dSdz]);
-    return G;
-  }
-
   calculateScalar(local) {
     const p = local[0];
     const q = local[1];
@@ -158,13 +159,13 @@ class prismCell {
     }
     return S;
   }
-
-
+  
   randomSampling() {
-    var p = Math.random();
-    var q = Math.random();
-    var r = Math.random();
-    var local = [];
+    let p = Math.random();
+    let q = Math.random();
+    let r = Math.random();
+    let local = new Array(3);
+    
     if(p + q > 1) {
       local[0] = 1 - p;
       local[1] = 1 - q;
@@ -176,7 +177,7 @@ class prismCell {
     }
     return local;
   }
-
+  
   determinant(A) {
     const a0 = A[0][0] * A[1][1] * A[2][2];
     const a1 = A[1][0] * A[2][1] * A[0][2];
@@ -210,6 +211,27 @@ class prismCell {
     Ainv[2][2] = detA_inv * (A[0][0] * A[1][1] - A[0][1] * A[1][0]);
 
     return Ainv;
+  }
+
+  transpose(A) {
+    let At = [];
+    At[0] = new Array(3);
+    At[1] = new Array(3);
+    At[2] = new Array(3);
+
+    At[0][0] = A[0][0];
+    At[0][1] = A[1][0];
+    At[0][2] = A[2][0];
+
+    At[1][0] = A[0][1];
+    At[1][1] = A[1][1];
+    At[1][2] = A[2][1];
+
+    At[2][0] = A[0][2];
+    At[2][1] = A[1][2];
+    At[2][2] = A[2][2];
+
+    return At;
   }
 
   multiply_3_1(A, B) {

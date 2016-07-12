@@ -16,8 +16,20 @@ class prismCell {
     this.S = [ s0, s1, s2, s3, s4, s5 ];  //scalar
     this.vertices = 6;
     this.volume = this.calculateVolume();
+    this.checkForm();
   }
 
+  checkForm() {
+    let v0_v1 = this.distance(this.V[0], this.V[1]);
+    let v0_v2 = this.distance(this.V[0], this.V[2]);
+    let v1_v2 = this.distance(this.V[1], this.V[2]);
+
+    if(Math.abs(Math.sqrt(v0_v1 * v0_v1 + v0_v2 * v0_v2 ) - v1_v2) > 0.3){
+      console.log('error:', Math.sqrt(v0_v1 * v0_v1 + v0_v2 * v0_v2 ) - v1_v2);
+      console.log(this.V);
+    }
+  }
+  
   localToGlobal(local) {
     let x = 0;
     let y = 0;
@@ -185,7 +197,7 @@ class prismCell {
     const jacobiMatrix = [[dxdp, dydp, dzdp], [dxdq, dydq, dzdq], [dxdr, dydr, dzdr]];
     return jacobiMatrix;
   }
-  
+
   distance(A, B) {
     let r;
     r = Math.sqrt(Math.pow(A[0] - B[0], 2) + Math.pow(A[1] - B[1], 2) + Math.pow(A[2] - B[2], 2));

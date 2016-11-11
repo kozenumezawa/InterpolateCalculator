@@ -121,7 +121,7 @@ camera.lookAt({x:test1v0[0], y:test1v0[1], z:test1v0[2]});
 
 function render() {
   requestAnimationFrame(render);
-  // controls.update();
+  controls.update();
   renderer.render(scene, camera);
 }
 

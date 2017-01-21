@@ -54,8 +54,8 @@ function drawPrism(v0, v1, v2, v3, v4, v5){
   geometry.vertices.push(new THREE.Vector3(v1[0], v1[1], v1[2]));
   geometry.vertices.push(new THREE.Vector3(v2[0], v2[1], v2[2]));
   geometry.vertices.push(new THREE.Vector3(v3[0], v3[1], v3[2]));
-  // geometry.vertices.push(new THREE.Vector3(v4[0], v4[1], v4[2]));
-  // geometry.vertices.push(new THREE.Vector3(v5[0], v5[1], v5[2]));
+  geometry.vertices.push(new THREE.Vector3(v4[0], v4[1], v4[2]));
+  geometry.vertices.push(new THREE.Vector3(v5[0], v5[1], v5[2]));
 
   var material = new THREE.LineBasicMaterial({color: 0xFFFFFF});
   var line = new THREE.Line(geometry, material);
@@ -109,8 +109,8 @@ var prism2 = new prismCell(test1v0, test1v1, test1v2, test1v3, test1v4, test1v5,
   test1s0, test1s1, test1s2, test1s3, test1s4, test1s5);
 console.log(prism2.V);
 console.log(prism2.volume);
-// drawPrism(testv0, testv1, testv2, testv3, testv4, testv5);
-drawPrism(test1v0, test1v1, test1v2, test1v3, test1v4, test1v5);
+drawPrism(testv0, testv1, testv2, testv3, testv4, testv5);
+// drawPrism(test1v0, test1v1, test1v2, test1v3, test1v4, test1v5);
 
 
 camera.position.x = test1v0[0];
